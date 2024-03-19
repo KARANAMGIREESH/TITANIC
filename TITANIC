@@ -1,0 +1,221 @@
+### use the titanic dataset used in today's class and answer the following questions.
+
+# - survival - Survival (0 = No; 1 = Yes)
+# - class - Passenger Class (1 = 1st; 2 = 2nd; 3 = 3rd)
+# - name - Name
+# - sex - Sex
+# - age - Age
+# - sibsp - Number of Siblings/Spouses Aboard
+# - parch - Number of Parents/Children Aboard
+# - ticket - Ticket Number
+# - fare - Passenger Fare
+# - cabin - Cabin
+# - embarked - Port of Embarkation (C = Cherbourg; Q = Queenstown; S = Southampton)
+# - boat - Lifeboat (if survived)
+# - body - Body number (if did not survive and body was recovered)
+# --------------------------------------------------------------------------------------
+
+import pandas as pd
+df = pd.read_csv('https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv')
+print(df)
+# --------------------------------------------------------------------------------------
+print("1. Find out how many male and female passenger were on boarded .")
+# Count the number of male and female passengers onboard in the Titanic dataset
+passenger_count = df['Sex'].value_counts()
+print(passenger_count)
+# Display the count of male and female passengers onboard
+print("Number of male passengers onboard: ", passenger_count['male'])
+print("Number of female passengers onboard: ", passenger_count['female'])
+
+print("Total no of passengers",passenger_count['male']+passenger_count['female'])
+print(df['Sex'])
+# df['Persns']=df['']
+
+print(" 2. how many survived we have .")
+# Count the number of passengers who survived (Survived=1) in the Titanic dataset
+survived_count = df['Survived'].sum()
+
+# Display the count of passengers who survived
+print("Number of passengers who survived: ", survived_count)
+
+print(" 3. how many casuality we have ")
+# Count the number of casualties (passengers who did not survive) in the Titanic dataset
+casualty_count = df['Survived'].count() - df['Survived'].sum()
+
+# Display the count of casualties
+print("Number of casualties: ", casualty_count)
+
+print(" 4. what is name of a person who is the eldest one . ")
+# Count the number of passengers who survived (Survived=1) in the Titanic dataset
+survived_count = df['Survived'].sum()
+
+# Display the count of passengers who survived
+print("Number of passengers who survived: ", survived_count)
+
+# Find the index of the person with the maximum age
+max_age_index = df['Age'].idxmax()
+
+# Get the name of the eldest person
+eldest_name = df.loc[max_age_index, 'Name']
+
+# Display the name of the eldest person
+print("Name of the eldest person: ", eldest_name)
+
+# Find the maximum age in the DataFrame
+max_age = df['Age'].max()
+
+# Find the record(s) with the maximum age
+max_age_person = df[df['Age'] == max_age]
+
+# Get the name(s) of the person(s) with the maximum age
+max_age_names = max_age_person['Name'].values
+
+# Display the maximum age and the name(s) of the person(s) with that age
+print("Maximum age in the dataset: ", max_age)
+print("Name(s) of the person(s) with the maximum age:")
+for name in max_age_names:
+    print(name)
+
+
+print(" 5. how many passenger do we have in first , second and third class ")
+# Count the number of passengers in each class
+passenger_count_by_class = df['Pclass'].value_counts()
+
+# Display the count of passengers in each class
+for pclass, count in passenger_count_by_class.items():
+    print(f"Number of passengers in Class {pclass}: {count}")
+
+print(" 6. how many person we have whose name starts with s , ")
+# Count the number of persons whose names start with "S"
+name_starts_with_s_count = df[df['Name'].str.startswith('S')]['Name'].count()
+
+# Display the count of persons whose names start with "S"
+print("Number of persons whose names start with 'S': ", name_starts_with_s_count)
+
+
+print("7. try to create a new column which is a summation  of SibSp and parch ")
+# Create a new column 'FamilySize' as the summation of 'SibSp' and 'Parch'
+df['FamilySize'] = df['SibSp'] + df['Parch']
+
+# Display the updated DataFrame with the new 'FamilySize' column
+print(df.head())
+
+print("8. how many person do we have below age of 25 .")
+# Count the number of persons below the age of 25
+persons_below_25_count = df[df['Age'] < 25]['Name'].count()
+
+# Display the count of persons below the age of 25
+print("Number of persons below the age of 25: ", persons_below_25_count)
+print(" 9. how many person died whose age was less than 40 ")
+# Count the number of persons who died (did not survive) and had an age less than 40
+persons_died_below_40_count = df[(df['Survived'] == 0) & (df['Age'] < 40)]['Name'].count()
+
+# Display the count of persons who died and had an age less than 40
+print("Number of persons who died with age less than 40: ", persons_died_below_40_count)
+print("10. from a  cabin column separate text and numeric value .")
+# Create new columns 'CabinLetter' for the text part and 'CabinNumber' for the numeric part
+df['CabinLetter'] = df['Cabin'].str.extract(r'([a-zA-Z]+)', expand=False)
+df['CabinNumber'] = df['Cabin'].str.extract(r'(\d+)', expand=False)
+
+# Display the updated DataFrame with the new 'CabinLetter' and 'CabinNumber' columns
+print(df[['Cabin', 'CabinLetter', 'CabinNumber']].head())
+
+print("11. what is the minimum, maximum, average and median age ")
+# Calculate minimum, maximum, average, and median age
+min_age = df['Age'].min()
+max_age = df['Age'].max()
+average_age = df['Age'].mean()
+median_age = df['Age'].median()
+
+# Display the minimum, maximum, average, and median age
+print("Minimum Age: ", min_age)
+print("Maximum Age: ", max_age)
+print("Average Age: ", average_age)
+print("Median Age: ", median_age)
+
+print("12. Who was the oldest person and the youngest person on the ship ")
+# Find the oldest person
+oldest_person = df[df['Age'] == df['Age'].max()]['Name'].values[0]
+
+# Find the youngest person
+youngest_person = df[df['Age'] == df['Age'].min()]['Name'].values[0]
+
+# Display the oldest and youngest person
+print("Oldest person on the ship: ", oldest_person)
+print("Youngest person on the ship: ", youngest_person)
+
+# Find the oldest person and their age
+oldest_person = df.loc[df['Age'].idxmax(), 'Name']
+oldest_age = df['Age'].max()
+
+# Find the youngest person and their age
+youngest_person = df.loc[df['Age'].idxmin(), 'Name']
+youngest_age = df['Age'].min()
+
+# Display the oldest and youngest person with their ages
+print("Oldest person on the ship: ", oldest_person, " (Age: ", oldest_age, ")")
+print("Youngest person on the ship: ", youngest_person, " (Age: ", youngest_age, ")")
+print("13. How many male and female survived ")
+# Count the number of male and female passengers who survived
+survived_count_by_sex = df[df['Survived'] == 1]['Sex'].value_counts()
+
+# Display the count of male and female passengers who survived
+print("Number of male passengers who survived: ", survived_count_by_sex['male'])
+print("Number of female passengers who survived: ", survived_count_by_sex['female'])
+print("14. What is the total fare paid by men and women ")
+# Calculate the total fare paid by men and women
+total_fare_by_sex = df.groupby('Sex')['Fare'].sum()
+
+# Display the total fare paid by men and women
+print("Total fare paid by men: ", total_fare_by_sex['male'])
+print("Total fare paid by women: ", total_fare_by_sex['female'])
+print("15. How many men and women were on the ship ")
+# Count the number of men and women on the ship
+passenger_count_by_sex = df['Sex'].value_counts()
+
+# Display the count of men and women on the ship
+print("Number of men on the ship: ", passenger_count_by_sex['male'])
+print("Number of women on the ship: ", passenger_count_by_sex['female'])
+print("16. What is the total fare amount for the people who did not survive ")
+# Calculate the total fare amount for the people who did not survive
+total_fare_not_survived = df[df['Survived'] == 0]['Fare'].sum()
+
+# Display the total fare amount for the people who did not survive
+print("Total fare amount for the people who did not survive: ", total_fare_not_survived)
+print("17. What is the average fare for the men and women for different Pclass values")
+# Calculate the average fare for men and women in different Pclass values
+average_fare_by_sex_pclass = df.groupby(['Sex', 'Pclass'])['Fare'].mean()
+
+# Display the average fare for men and women in different Pclass values
+print("Average fare for men and women in different Pclass values:")
+print(average_fare_by_sex_pclass)
+print("18. What is the count of survied and unsurvived based on the different Emabrked unique values ")
+# Count the number of survived and unsurvived passengers based on different unique values in the 'Embarked' column
+survived_count_by_embarked = df.groupby(['Embarked', 'Survived'])['Survived'].count()
+
+# Display the count of survived and unsurvived passengers based on different unique values in the 'Embarked' column
+print("Count of survived and unsurvived passengers based on different unique values in the 'Embarked' column:")
+print(survived_count_by_embarked)
+print("19. What is the total fare amount for each Pclass ")
+# Calculate the total fare amount for each Pclass
+total_fare_by_pclass = df.groupby('Pclass')['Fare'].sum()
+
+# Display the total fare amount for each Pclass
+print("Total fare amount for each Pclass:")
+print(total_fare_by_pclass)
+print("20. What is the male and female median age distribution for each Embarked unique value ")
+# Calculate the median age distribution for male and female passengers for each unique value in the 'Embarked' column
+median_age_by_sex_embarked = df.groupby(['Embarked', 'Sex'])['Age'].median()
+
+# Display the median age distribution for male and female passengers for each unique value in the 'Embarked' column
+print("Median age distribution for male and female passengers for each unique value in the 'Embarked' column:")
+print(median_age_by_sex_embarked)
+
+
+
+
+
+
+
+
+
